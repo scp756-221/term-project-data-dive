@@ -75,6 +75,59 @@ def get_playlist(playlist_id):
     #add handling if response isnt found
     return (response_json)
 
+@bp.route('/', methods=['POST'])
+def create_playlist():
+    headers = request.headers
+    #return request.get_json()
+    try:
+        content = request.get_json()
+        isPrivate = content['Is_Private']
+        playlist_name = content['Playlist_Name']
+        songsId = content['Songs_Id']
+        userId = content['User_Id']
+    except Exception:
+        return Response(json.dumps({"Message": "Error Reading Playlists Content"}),
+                                    status=400,
+                                    mimetype='application/json')
+    #check the songs are exitisng in the DB 
+    for song_id in songsId:
+        song = get_song(song_id.strip(), headers)
+        if song['Count'] == 1:
+            continue
+        else:
+            return Response(json.dumps({"Message": "Song with id: " + song_id + " is not present" }),
+                                        status=400, 
+                                        mimetype='application/json')
+    #save to DB
+    url = db['name'] + '/' + db['endpoint'][1]
+    request_body = {"objtype": "playlist",
+                    "Is_Private": isPrivate, 
+                    "Playlist_Name": playlist_name, 
+                    "User_Id": userId,
+                    "Songs_Id": songsId}
+    response = requests.post(url, json=request_body, headers={'Authorization': headers['Authorization']})
+    return Response(json.dumps({"Message" : "Playlist Created!", 
+                                "Playlist Details": response.json()}), 
+                                status=200, 
+                                mimetype='application/json')
+
+#get_song api from s2
+@bp.route('/<music_id>', methods=['GET'])
+def get_song(music_id):
+    headers = request.headers
+    # check header here
+    if 'Authorization' not in headers:
+        return Response(json.dumps({"error": "missing auth"}),
+                        status=401,
+                        mimetype='application/json')
+    payload = {"objtype": "music", "objkey": music_id}
+    url = db['name'] + '/' + db['endpoint'][0]
+    response = requests.get(
+        url,
+        params=payload,
+        headers={'Authorization': headers['Authorization']})
+    return (response.json())
+
 # All database calls will have this prefix.  Prometheus metric
 # calls will not---they will have route '/metrics'.  This is
 # the conventional organization.
