@@ -110,6 +110,30 @@ def create_playlist():
                                 "Playlist Details": response.json()}), 
                                 status=200, 
                                 mimetype='application/json')
+                                
+@bp.route('/modify/<playlist_id>', methods=['PUT'])
+def update_playlist(playlist_id):
+    headers = request.headers
+    # check header here
+    if 'Authorization' not in headers:
+        return Response(json.dumps({"error": "missing auth"}), status=401,
+                        mimetype='application/json')
+    try:
+        content = request.get_json()
+        songsId = content['Songs_Id']
+        isPrivate = content['Is_Private']
+        userId = content['User_Id']
+        playlist_name = content['Playlist_Name']
+    except Exception:
+        return json.dumps({"message": "error reading arguments"})
+
+    payload = {"objtype": "playlist", "objkey": playlist_id}
+    url = db['name'] + '/' + db['endpoint'][3]
+    response = requests.put(
+        url,
+        params=payload,
+        json={'Is_Private': isPrivate, 'Playlist_Name': playlist_name, 'Songs_Id': songsId, 'User_Id': userId})
+    return (response.text)
 
 #get_song api from s2
 @bp.route('/<music_id>', methods=['GET'])
