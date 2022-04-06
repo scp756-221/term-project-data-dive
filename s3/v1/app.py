@@ -117,6 +117,7 @@ def make_playlist_public_private(playlist_id):
                                 status=200, 
                                 mimetype='application/json')
 
+                                
 @bp.route('/', methods=['POST'])
 def create_playlist():
     headers = request.headers
