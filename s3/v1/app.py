@@ -75,47 +75,48 @@ def get_playlist(playlist_id):
     #add handling if response isnt found
     return (response_json)
 
-@bp.route('/makepublic/<playlist_id>', methods=['PUT'])
-def make_playlist_public_private(playlist_id):
-    headers = request.headers
-    try:
-        content = request.get_json()
-        print("content is")
-        print(content)
-        isPrivate = content['Is_Private']
-    except Exception:
-        return json.dumps({"message": "error reading parameters"})
-    payload = {"objtype": "playlist", "objkey": playlist_id}
-    url = db['name'] + '/' + db['endpoint'][0]
-    response = requests.get(
-        url,
-        params=payload,
-        headers={'Authorization': headers['Authorization']})
-    response_json = response.json() 
-    #return response_json
-    playlist = response_json['Items'][0]
+  @bp.route('/makepublic/<playlist_id>', methods=['PUT'])
+  def make_playlist_public_private(playlist_id):
+      headers = request.headers
+      try:
+          content = request.get_json()
+          print("content is")
+          print(content)
+          isPrivate = content['Is_Private']
+      except Exception:
+          return json.dumps({"message": "error reading parameters"})
+      payload = {"objtype": "playlist", "objkey": playlist_id}
+      url = db['name'] + '/' + db['endpoint'][0]
+      response = requests.get(
+          url,
+          params=payload,
+          headers={'Authorization': headers['Authorization']})
+      response_json = response.json() 
+      #return response_json
+      playlist = response_json['Items'][0]
 
-    if isPrivate == False :
-        playlist["Is_Private"] = False
-        playlist["User_Id"] = ''
-    else:
-        playlist["Is_Private"] = True
-        try:
-            userId = content['isPrivate']
-            playlist["User_Id"] = userId.strip()
-        except:
-            return json.dumps({"message": "error reading parameters, User Id is absent!"})
-    #save to DB
-    url = db['name'] + '/' + db['endpoint'][3]
-    response = requests.put(
-        url,
-        params={"objtype": "playlist", "objkey": playlist_id}, 
-        json={"Is_Private": isPrivate, "Playlist_Name": playlist["Playlist_Name"], "User_Id": playlist["User_Id"], "Songs_Id": playlist["Songs_Id"]}, 
-        headers={'Authorization': headers['Authorization']})
-    return Response(json.dumps({"Message" : "Playlist Created!", 
-                                "Playlist Details": response.json()}), 
-                                status=200, 
-                                mimetype='application/json')
+      if isPrivate == False :
+          playlist["Is_Private"] = False
+          playlist["User_Id"] = ''
+      else:
+          playlist["Is_Private"] = True
+          try:
+              userId = content['isPrivate']
+              playlist["User_Id"] = userId.strip()
+          except:
+              return json.dumps({"message": "error reading parameters, User Id is absent!"})
+      #save to DB
+      url = db['name'] + '/' + db['endpoint'][3]
+      response = requests.put(
+          url,
+          params={"objtype": "playlist", "objkey": playlist_id}, 
+          json={"Is_Private": isPrivate, "Playlist_Name": playlist["Playlist_Name"], "User_Id": playlist["User_Id"], "Songs_Id": playlist["Songs_Id"]}, 
+          headers={'Authorization': headers['Authorization']})
+      return Response(json.dumps({"Message" : "Playlist Created!", 
+                                  "Playlist Details": response.json()}), 
+                                  status=200, 
+                                  mimetype='application/json')
+
 
 @bp.route('/', methods=['POST'])
 def create_playlist():
