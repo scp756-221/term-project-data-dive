@@ -76,7 +76,7 @@ def get_playlist(playlist_id):
     return (response_json)
 
 @bp.route('/makepublic/<playlist_id>', methods=['PUT'])
-  def make_playlist_public_private(playlist_id):
+def make_playlist_public_private(playlist_id):
       headers = request.headers
       try:
           content = request.get_json()
