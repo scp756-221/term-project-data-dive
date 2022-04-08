@@ -75,8 +75,8 @@ def get_playlist(playlist_id):
     #add handling if response isnt found
     return (response_json)
 
-  @bp.route('/makepublic/<playlist_id>', methods=['PUT'])
-  def make_playlist_public_private(playlist_id):
+@bp.route('/makepublic/<playlist_id>', methods=['PUT'])
+def make_playlist_public_private(playlist_id):
       headers = request.headers
       try:
           content = request.get_json()
@@ -177,6 +177,53 @@ def update_playlist(playlist_id):
         params=payload,
         json={'Is_Private': isPrivate, 'Playlist_Name': playlist_name, 'Songs_Id': songsId, 'User_Id': userId})
     return (response.text)
+
+@bp.route('/removesong/<playlist_id>', methods=['PUT'])
+def remove_song_from_playlist(playlist_id):
+    headers = request.headers
+    #check header here
+    if 'Authorization' not in headers:
+        return Response(json.dumps({"error": "missing auth"}),
+                        status=401,
+                        mimetype='application/json')
+    
+    #get existing details of the playlist
+    playlist = get_playlist(playlist_id) 
+    if playlist['Count'] != 1:
+        return Response(json.dumps({"Message": "No playlist with playlist id found!"}),
+                                    status=400,
+                                    mimetype='application/json')
+
+    songs = playlist['Items'][0]['Songs Id']
+    try:
+        content = request.get_json()
+        song_id = content['Song Id']
+    except:
+        return json.dumps({"message": "error reading parameters"})
+    if  song_id not in songs:
+        return Response(json.dumps({"Message": "Song Not in the Playlist!"}),
+                                    status=400, 
+                                    mimetype='application/json')  
+    #get the songs id
+    music_api_reponse = get_song(song_id.strip(), headers)
+    if music_api_reponse['Count'] != 1:
+        return Response(json.dumps({"Message": "Song with id: " + song_id + " is not present" }),
+                                        status=400, 
+                                        mimetype='application/json')
+    songs.remove(song_id)
+    #save to DB
+    url = db['name'] + '/' + db['endpoint'][3]
+    #response_items = {}
+    playlist = playlist['Items'][0]
+    #return playlist
+    response = requests.put(
+        url,
+        params={"objtype": "playlist", "objkey": playlist_id}, 
+        json={"Is Private": playlist['Is Private'], "Playlist Name": playlist['Playlist Name'], "User Id": playlist['User Id'], "Songs Id": songs})
+    return Response(json.dumps({"Message" : "Playlist Updated Successfully!", 
+                                "Playlist Details": response.text}), 
+                                status=200, 
+                                mimetype='application/json')
 
 #get_song api from s2
 @bp.route('/<music_id>', methods=['GET'])
