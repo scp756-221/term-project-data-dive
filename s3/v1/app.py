@@ -75,7 +75,7 @@ def get_playlist(playlist_id):
     #add handling if response isnt found
     return (response_json)
 
-  @bp.route('/makepublic/<playlist_id>', methods=['PUT'])
+@bp.route('/makepublic/<playlist_id>', methods=['PUT'])
   def make_playlist_public_private(playlist_id):
       headers = request.headers
       try:
@@ -177,6 +177,8 @@ def update_playlist(playlist_id):
         params=payload,
         json={'Is_Private': isPrivate, 'Playlist_Name': playlist_name, 'Songs_Id': songsId, 'User_Id': userId})
     return (response.text)
+
+
 
 #get_song api from s2
 @bp.route('/<music_id>', methods=['GET'])
