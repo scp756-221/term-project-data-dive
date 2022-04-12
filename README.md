@@ -174,4 +174,47 @@ User: admin
 Password: prom-operator
 ~~~
 After signon, you will see the Grafana home screen. Navigate to our dashboard by hovering on the “Dashboards” icon on the left:
+![alt text](https://github.com/scp756-221/term-project-data-dive/blob/data-dive-saurabh/visualizations/Grafana-home-page-highlighting-dashboards-menu-item.png)
+  
+Select “Browse” from the menu. This will bring up a list of dashboards. Click on c756 transactions (it should be at or near the top of the list).
+With this, Graffana Dashboard is added for monitoring the load on the services.
 
+## Giving our services an initial load
+Now we will begin to send load to the system, simulating user interactions.
+To create this load, you will use Gatling via an image that has been prepared for you: `ghcr.io/scp-2021-jan-cmpt-756/gatling:3.4.2.`) (The source Dockerfile is available [here](https://github.com/tedkirkpatrick/kubernetes-testbed/tree/master/e-k8s/tools/gatling).)
+
+**Start Gatling**:
+Gatling is a sophisticated tool that allows you to define scenarios of user behaviour, using a programming language derived from Scala. You then run Gatling, specifying how many simulated users will follow each scenario.
+
+We have provided three scenarios (Gatling calls them simulations) for you. The source code is supplied at `gatling/simulations/proj756/ReadTables.scala`:
+
+*`ReadUserSim`: Call `s1` to read a user, then wait 1 s before trying again
+*`ReadMusicSim`: Call `s2` to read a music entry, then wait 1 s before trying again
+*`ReadPlaylistSim`: Call `s3` to read a music entry, then wait 1 s before trying again
+The simulations uses three parameters:
+
+`CLUSTER_IP` - the DNS name of your cluster
+`USERS` - the number of users to simulate
+`SIM_NAME` - selects either `ReadUserSim`, `ReadMusicSim` or `ReadPlaylistSim` to choose between the microservices.
+Each simulation runs in an infinite loop until it is stopped (docker container stop). (There is also a ‘bulk kill’ script tools/kill-gatling.sh.)
+
+To start Gatling, create a script `gatling-1-music.sh` that contains the following:
+~~~  
+#!/usr/bin/env bash
+docker container run --detach --rm \
+  -v ${PWD}/gatling/results:/opt/gatling/results \
+  -v ${PWD}/gatling:/opt/gatling/user-files \
+  -v ${PWD}/gatling/target:/opt/gatling/target \
+  -e CLUSTER_IP=`tools/getip.sh kubectl istio-system svc/istio-ingressgateway` \
+  -e USERS=1 \
+  -e SIM_NAME=ReadMusicSim \
+  --label gatling \
+  ghcr.io/scp-2021-jan-cmpt-756/gatling:3.4.2 \
+  -s proj756.ReadMusicSim
+~~~
+ 
+To stop gatling, use `tools/kill-gatling.sh`. Note that this scripts stops all accumulated/running simulations.  
+
+View the effects on the dashboard
+Return to the Grafana dashboard. Now that we have a light load on the system, all the panels with the exception of “Errors per second” should have data. For such a light load, we will not have any errors, so this is expected.
+  
