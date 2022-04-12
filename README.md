@@ -238,3 +238,20 @@ $ make -f k8s.mak prometheus-url
 http://20.48.136.216:9090/
 ~~~
 ![alt text](https://scp756-221.github.io/course-site/g2-prom/prometheus-new-ui.png)
+  
+### Kiali
+
+Retrieve the URL for Grafana and Kiali:
+~~~
+$ make -f k8s.mak grafana-url
+http://35.233.168.89:3000/
+$ make -f k8s.mak kiali-url
+http://35.227.144.239/kiali
+~~~
+  
+### Scaling
+  
+~~~
+kubectl scale deployment/cmpt756db --replicas=5
+eksctl scale nodegroup --name=worker-nodes --cluster aws756 --nodes 5 --nodes-min 2 --nodes-max 8 
+~~~
