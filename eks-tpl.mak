@@ -28,7 +28,9 @@ EKS_CTX=aws756
 
 NGROUP=worker-nodes
 NTYPE=t3.medium
-REGION=ZZ-AWS-REGION
+NTYPE=t3.2xlarge
+#NTYPE=m5.2xlarge
+REGION=us-west-2
 KVER=1.21
 
 
@@ -71,4 +73,3 @@ cd:
 # Vendor-agnostic but subtarget of vendor-specific targets such as "start"
 showcontext:
 	$(KC) config get-contexts
-
