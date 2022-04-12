@@ -1,0 +1,5 @@
+Is_private,Playlist_Name,Songs_Id,User_Id,UUID
+TRUE,Playlist Saurabh,"[{""S"":""0894ddc7-0c84-4f13-a037-ddcaa1134ec8""},{""S"":""c2573193-f333-49e2-abec-182915747756""},{""S"":""22e47f97-11ca-4c3c-8e77-f3068fddaf6e""}]",75ebc062-a808-4a0f-a79b-8ac568564bfe,6195ac0f-209a-40c1-a59e-0448a49d4587
+TRUE,Playlist Vidhi,"[{""S"":""c2573193-f333-49e2-abec-182915747756""},{""S"":""22e47f97-11ca-4c3c-8e77-f3068fddaf6e""},{""S"":""bb9e9105-6224-4a60-aabd-8d29cc4b1349""},{""S"":""26e6462c-eacf-40bb-b4d0-d683966e2624""},{""S"":""0894ddc7-0c84-4f13-a037-ddcaa1134ec8""}]",2e4c0d7e-b0e6-4739-b044-ee1d45872a7c,183cf1e6-3397-4161-a5bf-e10c53d348ea
+TRUE,Rock Playlist,"[{""S"":""c2573193-f333-49e2-abec-182915747756""},{""S"":""0894ddc7-0c84-4f13-a037-ddcaa1134ec8""}]",423a10a6-ab66-48c5-a1c7-dffb3169d744,79c1dbac-4940-44fb-9b41-10f674b6dff5
+TRUE,New Rock Playlist,"[{""S"":""0894ddc7-0c84-4f13-a037-ddcaa1134ec8""},{""S"":""c2573193-f333-49e2-abec-182915747756""}]",75ebc062-a808-4a0f-a79b-8ac568564bfe,320b0ea5-ac7d-45cf-98ac-cd037c2152a2
