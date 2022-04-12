@@ -178,6 +178,7 @@ def update_playlist(playlist_id):
         json={'Is_Private': isPrivate, 'Playlist_Name': playlist_name, 'Songs_Id': songsId, 'User_Id': userId})
     return (response.text)
 
+'''This function takes in playlist id as parameter and add song to that playlist '''
 @bp.route('/addsong/<playlist_id>', methods=['POST'])
 def add_song_to_playlist(playlist_id):
     headers = request.headers
@@ -222,7 +223,8 @@ def add_song_to_playlist(playlist_id):
                                 "Playlist Details": response.text}), 
                                 status=200, 
                                 mimetype='application/json')
-   
+
+'''This function takes in playlist id as parameter and remove song from that playlist '''
 @bp.route('/removesong/<playlist_id>', methods=['PUT'])
 def remove_song_from_playlist(playlist_id):
     headers = request.headers
