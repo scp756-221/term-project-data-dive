@@ -178,6 +178,7 @@ def update_playlist(playlist_id):
         json={'Is_Private': isPrivate, 'Playlist_Name': playlist_name, 'Songs_Id': songsId, 'User_Id': userId})
     return (response.text)
 
+'''This function takes in playlist id as parameter and add song to that playlist '''
 @bp.route('/addsong/<playlist_id>', methods=['POST'])
 def add_song_to_playlist(playlist_id):
     headers = request.headers
