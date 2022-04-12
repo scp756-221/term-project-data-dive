@@ -13,8 +13,18 @@ Building, scaling and observing a working distributed application.
 * Aman Purohit
 
 ## Structure
-
-### 1. Instantiate the template files
+**Important Directories**
+* `cluster`: Configuration files for the cluster<br>
+* `db`: Database service<br>
+* `gatling`: Scala scripts used by Gatling to generate test load on the application<br>
+* `loader`: Loader service used to insert data into the DynamoDB service<br>
+* `logs`: Where logs are stored<br>
+* `s1`: User service<br>
+* `s2`: Music service<br>
+* `s3`: Playlist service<br>
+* `tools`: For quick scripts that are useful in make-files<br>
+---
+### Instantiate the template files
 
 #### Fill in the required values in the template variable file
 
@@ -55,6 +65,7 @@ Music	S2	Lists of songs and their artist	Your Kubernetes cluster on AWS
 Database	DB	Interface to key-value store	Your Kubernetes cluster on AWS
 DynamoDB	(None)	Key-value store	Service managed by Amazon
 
+---
 ### Start your AWS EKS cluster
 
 To start the container, run the followimg command:
@@ -94,7 +105,8 @@ To delete the nodegroup of your cloud cluster:
 ~~~
 To recreate the node-group of your cloud cluster:
 ~~~
-/home/k8s#  make -f VENDOR.mak up
+/home/k8s#  make -f VENDOR.mak up<br>
+---
 ~~~
 ### Deploying your Application
 We will need to build the containers and push them to the container registry. Please save your **ghcr(github container registry)** token in **ghcr.io-token.txt** in the cluster folder. 
@@ -217,4 +229,12 @@ To stop gatling, use `tools/kill-gatling.sh`. Note that this scripts stops all a
 
 View the effects on the dashboard
 Return to the Grafana dashboard. Now that we have a light load on the system, all the panels with the exception of “Errors per second” should have data. For such a light load, we will not have any errors, so this is expected.
+
   
+### Prometheus
+Print out Prometheus URL for the cluster by running:
+~~~  
+$ make -f k8s.mak prometheus-url
+http://20.48.136.216:9090/
+~~~
+![alt text](https://scp756-221.github.io/course-site/g2-prom/prometheus-new-ui.png)
